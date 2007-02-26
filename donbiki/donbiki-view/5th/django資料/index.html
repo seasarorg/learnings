@@ -1,0 +1,1111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Django</title>
+<!-- metadata -->
+<meta name="generator" content="vim" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="20070226" />
+<meta name="author" content="Yutaka Matsubara" />
+
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="ui/default/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+
+<!-- S5 JS -->
+<script src="ui/default/slides.js" type="text/javascript"></script>
+
+<!-- Presentacular theme -->
+<link rel="stylesheet" href="presentacular.css" type="text/css" />
+
+<!-- prototype + scriptaculous -->
+<script src="prototype/prototype.js" type="text/javascript"></script>
+<script src="scriptaculous/scriptaculous.js" type="text/javascript"></script>
+<!-- Presentaculous JS -->
+<script src="presentacular.js" type="text/javascript"></script>
+
+
+
+
+</head>
+<body>
+
+<div class="layout">
+<div id="controls"><!-- DO NOT EDIT --></div>
+<div id="currentSlide"><!-- DO NOT EDIT --></div>
+<div id="header"></div>
+<div id="footer">
+<h2>Yutaka Mtatsubara</h2>
+<h2>http://d.hatena.co.jp/mopemope/</h2>
+</div>
+
+</div>
+
+
+<div class="presentation">
+
+<div class="slide">
+<h1>発掘！あるあるDjango大辞典</h1>
+<h2>プレゼンテーション層編</h2>
+<h2><a href="http://www.djangoproject.com/">Django The Web framework for perfectionists with deadlines -</a></h2>
+<h3>Yutaka Matsubara</h3>
+<h4>http://d.hatena.co.jp/mopemope/</h4>
+</div>
+
+
+<div class="slide section ">
+
+<h1 class="blindDown">Djangoとは？</h1>
+<div class="handout">
+</div>
+</div>
+
+
+<div class="slide blindDown">
+<h1>Djangoとは</h1>
+<ul class="incremental appear_0.5">
+<li>Pythonで書かれたWebフレームワーク</li>
+<li>CMSフレームワークをオープンソース化</li>
+<li>フルスタック</li>
+<li>主にメディアサイトで実績がある</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>認知度</h1>
+<ul class="incremental appear_0.5">
+<li>海外ではなかなかの人気</li>
+<li>Railsユーザとの意見交換などが行われている</li>
+<li>日本はdjango-ja</li>
+<li style="height:80px;font-size:80px;display:none" class="grow_1">ymasuda++</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>特徴</h1>
+<ul class="incremental appear_0.5">
+<li>サポートツールが付属</li>
+<li>Django自身必要なテーブルを作成</li>
+<li>バッテリー積んでます</li>
+<li>MVC→MTV</li>
+<li>フルスタックだけど各層が独立</li>
+<li>設計思想（哲学）がある</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>Djangoの哲学って？</h1>
+<ul class="incremental appear_0.5">
+<li>Webメディアサイトは立ち上げ速度命</li>
+<li>Webアプリケーション開発の基本に忠実</li>
+<li>構成要素はできるだけ独立に</li>
+<li>DRYの徹底</li>
+<li>明示性（脱暗黒魔術！）</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>脱暗黒魔術？</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>脱暗黒魔術とは</h1>
+<h3>かなり明示的！！！</h3>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#a020f0">from</font> django.template <font color="#a020f0">import</font> Context, loader
+<font color="#804040"> 2 </font><font color="#a020f0">from</font> mysite.polls.models <font color="#a020f0">import</font> Poll
+<font color="#804040"> 3 </font><font color="#a020f0">from</font> django.http <font color="#a020f0">import</font> HttpResponse
+<font color="#804040"> 4 </font>
+<font color="#804040"> 5 </font><font color="#804040"><b>def</b></font> <font color="#008080">index</font>(request):
+<font color="#804040"> 6 </font>    <font color="#0000ff">#データベースより値を取得</font>
+<font color="#804040"> 7 </font>    latest_poll_list = Poll.objects.all().order_by('<font color="#ff00ff">-pub_date</font>')[:5]
+<font color="#804040"> 8 </font>
+<font color="#804040"> 9 </font>    <font color="#0000ff">#テンプレートをロード</font>
+<font color="#804040">10 </font>    t = loader.get_template('<font color="#ff00ff">polls/index.html</font>')
+<font color="#804040">11 </font>    c = Context({
+<font color="#804040">12 </font>        '<font color="#ff00ff">latest_poll_list</font>': latest_poll_list,
+<font color="#804040">13 </font>    })
+<font color="#804040">14 </font>    <font color="#0000ff">#レンダリング→Response</font>
+<font color="#804040">15 </font>    <font color="#804040"><b>return</b></font> HttpResponse(t.render(c))
+<font color="#804040">16 </font>
+</pre>
+</div>
+
+<div class="slide section blindDown">
+<h1>ちょっと寄り道</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>設定ファイルについて</h1>
+<ul class="incremental appear_0.5">
+<li class="shake_15">YAMLじゃないよ</li>
+<li>Pythonファイルだよ！</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>設定ファイル</h1>
+<p>setting.py</p>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#0000ff"># Django settings for sample project.</font>
+<font color="#804040"> 2 </font>
+<font color="#804040"> 3 </font>DEBUG = True
+<font color="#804040"> 4 </font>TEMPLATE_DEBUG = DEBUG
+<font color="#804040"> 5 </font>
+<font color="#804040"> 6 </font>ADMINS = (
+<font color="#804040"> 7 </font>    <font color="#0000ff"># ('Your Name', 'your_email@domain.com'),</font>
+<font color="#804040"> 8 </font>)
+<font color="#804040"> 9 </font>
+<font color="#804040">10 </font>MANAGERS = ADMINS
+<font color="#804040">11 </font>
+<font color="#804040">12 </font>DATABASE_ENGINE = '<font color="#ff00ff">sqlite3</font>'           <font color="#0000ff"># 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.</font>
+<font color="#804040">13 </font>DATABASE_NAME = '<font color="#ff00ff">C:/sqlite/sample1.db</font>'             <font color="#0000ff"># Or path to database file if using sqlite3.</font>
+<font color="#804040">14 </font>DATABASE_USER = ''             <font color="#0000ff"># Not used with sqlite3.</font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>設定ファイル</h1>
+<p>setting.py</p>
+<pre class="grow">
+<font color="#804040">23 </font><font color="#0000ff"># Language code for this installation. All choices can be found here:</font>
+<font color="#804040">24 </font><font color="#0000ff"># <a href="http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes">http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes</a></font>
+<font color="#804040">25 </font><font color="#0000ff"># <a href="http://blogs.law.harvard.edu/tech/stories/storyReader$15">http://blogs.law.harvard.edu/tech/stories/storyReader$15</a></font>
+<font color="#804040">26 </font>LANGUAGE_CODE = '<font color="#ff00ff">ja_JP</font>'
+<font color="#804040">27 </font>
+<font color="#804040">28 </font>SITE_ID = 1
+<font color="#804040">29 </font>
+<font color="#804040">30 </font><font color="#0000ff"># If you set this to False, Django will make some optimizations so as not</font>
+<font color="#804040">31 </font><font color="#0000ff"># to load the internationalization machinery.</font>
+<font color="#804040">32 </font>USE_I18N = True
+<font color="#804040">33 </font>
+<font color="#804040">34 </font><font color="#0000ff"># Absolute path to the directory that holds media.</font>
+<font color="#804040">35 </font><font color="#0000ff"># Example: &quot;/home/media/media.lawrence.com/&quot;</font>
+<font color="#804040">36 </font>MEDIA_ROOT = ''
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>設定ファイル</h1>
+<p>setting.py</p>
+<pre class="grow">
+<font color="#804040">48 </font>SECRET_KEY = '<font color="#ff00ff">x9w#-$q4$p9vu3di4k2)g58mk=p*q=@(w76+j03xf22w@e6u1%</font>'
+<font color="#804040">49 </font>
+<font color="#804040">50 </font><font color="#0000ff"># List of callables that know how to import templates from various sources.</font>
+<font color="#804040">51 </font>TEMPLATE_LOADERS = (
+<font color="#804040">52 </font>    '<font color="#ff00ff">django.template.loaders.filesystem.load_template_source</font>',
+<font color="#804040">53 </font>    '<font color="#ff00ff">django.template.loaders.app_directories.load_template_source</font>',
+<font color="#804040">54 </font><font color="#0000ff">#     'django.template.loaders.eggs.load_template_source',</font>
+<font color="#804040">55 </font>)
+<font color="#804040">56 </font>
+<font color="#804040">57 </font>MIDDLEWARE_CLASSES = (
+<font color="#804040">58 </font>    '<font color="#ff00ff">django.middleware.common.CommonMiddleware</font>',
+<font color="#804040">59 </font>    '<font color="#ff00ff">django.contrib.sessions.middleware.SessionMiddleware</font>',
+<font color="#804040">60 </font>    '<font color="#ff00ff">django.contrib.auth.middleware.AuthenticationMiddleware</font>',
+<font color="#804040">61 </font>    '<font color="#ff00ff">django.middleware.doc.XViewMiddleware</font>',
+<font color="#804040">62 </font>)
+<font color="#804040">63 </font>
+<font color="#804040">64 </font>ROOT_URLCONF = '<font color="#ff00ff">sample.urls</font>'
+<font color="#804040">65 </font>
+<font color="#804040">66 </font>TEMPLATE_DIRS = (
+<font color="#804040">67 </font>    <font color="#0000ff"># Put strings here, like &quot;/home/html/django_templates&quot; or &quot;C:/www/django/templates&quot;.</font>
+<font color="#804040">68 </font>    <font color="#0000ff"># Always use forward slashes, even on Windows.</font>
+<font color="#804040">69 </font>    <font color="#0000ff"># Don't forget to use absolute paths, not relative paths.</font>
+<font color="#804040">70 </font>)
+<font color="#804040">71 </font>
+<font color="#804040">72 </font>INSTALLED_APPS = (
+<font color="#804040">73 </font>    '<font color="#ff00ff">django.contrib.auth</font>',
+<font color="#804040">74 </font>    '<font color="#ff00ff">django.contrib.contenttypes</font>',
+<font color="#804040">75 </font>    '<font color="#ff00ff">django.contrib.sessions</font>',
+<font color="#804040">76 </font>    '<font color="#ff00ff">django.contrib.sites</font>',
+<font color="#804040">77 </font>    '<font color="#ff00ff">django.contrib.admin</font>',
+<font color="#804040">78 </font>    '<font color="#ff00ff">sample.wiki</font>'
+<font color="#804040">79 </font>)
+</pre>
+</div>
+
+<div class="slide section blindDown">
+<h1>本題</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>Djangoのプレゼンテーション層</h1>
+<p >これだけしってりゃなんとかなるよ</p>
+<ul class="incremental appear_0.5">
+<li>URLの設計</li>
+<li>ビュー関数</li>
+<li>テンプレート(HTML)</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>URLの設計</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>URLの設計 </h1>
+<ul class="incremental appear_0.5">
+<li>WebなんだからURLは自由度が高くないとダメ</li>
+<li>URLと処理は組み合わせ自由</li>
+<li>正規表現による強力なマッチング</li>
+<li>RESTに近い設計を推奨</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>URLの設計</h1>
+<h2>(正規表現, Pythonのコールバック関数,  [, オプションの辞書オブジェクト])</h2>
+<p>url.py</p>
+<pre class="grow">
+<font color="#804040">1 </font><font color="#a020f0">from</font> django.conf.urls.defaults <font color="#a020f0">import</font> *
+<font color="#804040">2 </font>
+<font color="#804040">3 </font>urlpatterns = patterns('',
+<font color="#804040">4 </font>    (r'<font color="#ff00ff">^polls/$</font>', '<font color="#ff00ff">mysite.polls.views.index</font>'),
+<font color="#804040">5 </font>    (r'<font color="#ff00ff">^polls/(?P&lt;poll_id&gt;\d+)/$</font>', '<font color="#ff00ff">mysite.polls.views.detail</font>'),
+<font color="#804040">6 </font>    (r'<font color="#ff00ff">^polls/(?P&lt;poll_id&gt;\d+)/results/$</font>', '<font color="#ff00ff">mysite.polls.views.results</font>'),
+<font color="#804040">7 </font>    (r'<font color="#ff00ff">^polls/(?P&lt;poll_id&gt;\d+)/vote/$</font>', '<font color="#ff00ff">mysite.polls.views.vote</font>'),
+<font color="#804040">8 </font>)
+<font color="#804040">9 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>URLの設計</h1>
+<p>views.py</p>
+<pre class="grow">
+<font color="#804040">1 </font><font color="#a020f0">from</font> django.http <font color="#a020f0">import</font> HttpResponse
+<font color="#804040">2 </font>
+<font color="#804040">3 </font><font color="#804040"><b>def</b></font> <font color="#008080">index</font>(request):
+<font color="#804040">4 </font>    <font color="#804040"><b>return</b></font> HttpResponse(&quot;<font color="#ff00ff">Hello, world. You're at the poll index.</font>&quot;)
+<font color="#804040">5 </font>
+<font color="#804040">6 </font><font color="#804040"><b>def</b></font> <font color="#008080">detail</font>(request, poll_id):
+<font color="#804040">7 </font>    <font color="#804040"><b>return</b></font> HttpResponse(&quot;<font color="#ff00ff">You're looking at poll %s.</font>&quot; % poll_id)
+<font color="#804040">8 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>URLの設計 </h1>
+<ul class="incremental appear_0.5">
+<li>Python独自の正規表現は強力</li>
+<li>これだけ見ると変態的</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>ビュー関数</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数 </h1>
+<ul class="incremental appear_0.5">
+<li>処理は全て関数で記述</li>
+<li>関数の引き数にはURLでマッチングした値を渡せる</li>
+<li>GET、POSTを意識</li>
+<li>全てを明示的に記述</li>
+<li>DRYを意識しショートカットメソッドを用意</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数</h1>
+<p>views.py</p>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#a020f0">from</font> django.template <font color="#a020f0">import</font> Context, loader
+<font color="#804040"> 2 </font><font color="#a020f0">from</font> mysite.polls.models <font color="#a020f0">import</font> Poll
+<font color="#804040"> 3 </font><font color="#a020f0">from</font> django.http <font color="#a020f0">import</font> HttpResponse
+<font color="#804040"> 4 </font>
+<font color="#804040"> 5 </font><font color="#804040"><b>def</b></font> <font color="#008080">index</font>(request):
+<font color="#804040"> 6 </font>    latest_poll_list = Poll.objects.all().order_by('<font color="#ff00ff">-pub_date</font>')[:5]
+<font color="#804040"> 7 </font>    t = loader.get_template('<font color="#ff00ff">polls/index.html</font>')
+<font color="#804040"> 8 </font>    c = Context({
+<font color="#804040"> 9 </font>        '<font color="#ff00ff">latest_poll_list</font>': latest_poll_list,
+<font color="#804040">10 </font>    })
+<font color="#804040">11 </font>    <font color="#804040"><b>return</b></font> HttpResponse(t.render(c))
+<font color="#804040">12 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数</h1>
+<p>ショートカットを使うviews.py</p>
+<pre class="grow">
+<font color="#804040">1 </font><font color="#a020f0">from</font> django.shortcuts <font color="#a020f0">import</font> render_to_response
+<font color="#804040">2 </font><font color="#a020f0">from</font> mysite.polls.models <font color="#a020f0">import</font> Poll
+<font color="#804040">3 </font>
+<font color="#804040">4 </font><font color="#804040"><b>def</b></font> <font color="#008080">index</font>(request):
+<font color="#804040">5 </font>    latest_poll_list = Poll.objects.all().order_by('<font color="#ff00ff">-pub_date</font>')[:5]
+<font color="#804040">6 </font>    <font color="#804040"><b>return</b></font> render_to_response('<font color="#ff00ff">polls/index.html</font>',
+<font color="#804040">7 </font>                              {'<font color="#ff00ff">latest_poll_list</font>': latest_poll_list})
+<font color="#804040">8 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数</h1>
+<p>404の場合　views.py</p>
+<pre class="grow">
+<font color="#804040">1 </font><font color="#a020f0">from</font> django.http <font color="#a020f0">import</font> Http404
+<font color="#804040">2 </font><font color="#0000ff"># ...</font>
+<font color="#804040">3 </font><font color="#804040"><b>def</b></font> <font color="#008080">detail</font>(request, poll_id):
+<font color="#804040">4 </font>    <font color="#804040"><b>try</b></font>:
+<font color="#804040">5 </font>        p = Poll.objects.get(pk=poll_id)
+<font color="#804040">6 </font>    <font color="#804040"><b>except</b></font> Poll.DoesNotExist:
+<font color="#804040">7 </font>        <font color="#804040"><b>raise</b></font> Http404
+<font color="#804040">8 </font>    <font color="#804040"><b>return</b></font> render_to_response('<font color="#ff00ff">polls/detail.html</font>', {'<font color="#ff00ff">poll</font>': p})
+<font color="#804040">9 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数</h1>
+<p>ショートカットを使うviews.py</p>
+<pre class="grow">
+<font color="#804040">1 </font><font color="#a020f0">from</font> django.shortcuts <font color="#a020f0">import</font> render_to_response, get_object_or_404
+<font color="#804040">2 </font><font color="#0000ff"># ...</font>
+<font color="#804040">3 </font><font color="#804040"><b>def</b></font> <font color="#008080">detail</font>(request, poll_id):
+<font color="#804040">4 </font>    p = get_object_or_404(Poll, pk=poll_id)
+<font color="#804040">5 </font>    <font color="#804040"><b>return</b></font> render_to_response('<font color="#ff00ff">polls/detail.html</font>', {'<font color="#ff00ff">poll</font>': p})
+<font color="#804040">6 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数が呼ばれるまでの流れ</h1>
+<ul class="incremental appear_0.5">
+<li>非常にシンプル</li>
+<li>MiddlewareはServletFilterのイメージ</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数が呼ばれるまでの流れ</h1>
+<p>base.py</p>
+<pre class="grow">
+<font color="#804040"> 1 </font>    <font color="#804040"><b>def</b></font> <font color="#008080">get_response</font>(self, request):
+<font color="#804040"> 2 </font>        &quot;<font color="#ff00ff">Returns an HttpResponse object for the given HttpRequest</font>&quot;
+<font color="#804040"> 3 </font>        <font color="#a020f0">from</font> django.core <font color="#a020f0">import</font> exceptions, urlresolvers
+<font color="#804040"> 4 </font>        <font color="#a020f0">from</font> django.core.mail <font color="#a020f0">import</font> mail_admins
+<font color="#804040"> 5 </font>        <font color="#a020f0">from</font> django.conf <font color="#a020f0">import</font> settings
+<font color="#804040"> 6 </font>
+<font color="#804040"> 7 </font>        <font color="#0000ff"># Apply request middleware</font>
+<font color="#804040"> 8 </font>        <font color="#804040"><b>for</b></font> middleware_method <font color="#804040"><b>in</b></font> self._request_middleware:
+<font color="#804040"> 9 </font>            response = middleware_method(request)
+<font color="#804040">10 </font>            <font color="#804040"><b>if</b></font> response:
+<font color="#804040">11 </font>                <font color="#804040"><b>return</b></font> response
+<font color="#804040">12 </font>
+<font color="#804040">13 </font>        <font color="#0000ff"># Get urlconf from request object, if available.  Otherwise use default.</font>
+<font color="#804040">14 </font>        urlconf = getattr(request, &quot;<font color="#ff00ff">urlconf</font>&quot;, settings.ROOT_URLCONF)
+<font color="#804040">15 </font>
+<font color="#804040">16 </font>        resolver = urlresolvers.RegexURLResolver(r'<font color="#ff00ff">^/</font>', urlconf)
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数が呼ばれるまでの流れ</h1>
+<p>base.py</p>
+<pre class="grow">
+<font color="#804040">17 </font>        <font color="#804040"><b>try</b></font>:
+<font color="#804040">18 </font>            callback, callback_args, callback_kwargs = resolver.resolve(request.path)
+<font color="#804040">19 </font>
+<font color="#804040">20 </font>            <font color="#0000ff"># Apply view middleware</font>
+<font color="#804040">21 </font>            <font color="#804040"><b>for</b></font> middleware_method <font color="#804040"><b>in</b></font> self._view_middleware:
+<font color="#804040">22 </font>                response = middleware_method(request, callback, callback_args, callback_kwargs)
+<font color="#804040">23 </font>                <font color="#804040"><b>if</b></font> response:
+<font color="#804040">24 </font>                    <font color="#804040"><b>return</b></font> response
+<font color="#804040">25 </font>
+<font color="#804040">26 </font>            <font color="#804040"><b>try</b></font>:
+<font color="#804040">27 </font>                response = callback(request, *callback_args, **callback_kwargs)
+<font color="#804040">28 </font>            <font color="#804040"><b>except</b></font> Exception, e:
+<font color="#804040">29 </font>                <font color="#0000ff"># If the view raised an exception, run it through exception</font>
+<font color="#804040">30 </font>                <font color="#0000ff"># middleware, and if the exception middleware returns a</font>
+<font color="#804040">31 </font>                <font color="#0000ff"># response, use that. Otherwise, reraise the exception.</font>
+<font color="#804040">32 </font>                <font color="#804040"><b>for</b></font> middleware_method <font color="#804040"><b>in</b></font> self._exception_middleware:
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数が呼ばれるまでの流れ</h1>
+<p>base.py</p>
+<pre class="grow">
+<font color="#804040">33 </font>                    response = middleware_method(request, e)
+<font color="#804040">34 </font>                    <font color="#804040"><b>if</b></font> response:
+<font color="#804040">35 </font>                        <font color="#804040"><b>return</b></font> response
+<font color="#804040">36 </font>                <font color="#804040"><b>raise</b></font>
+<font color="#804040">37 </font>
+<font color="#804040">38 </font>            <font color="#0000ff"># Complain if the view returned None (a common error).</font>
+<font color="#804040">39 </font>            <font color="#804040"><b>if</b></font> response <font color="#804040"><b>is</b></font> None:
+<font color="#804040">40 </font>                <font color="#804040"><b>try</b></font>:
+<font color="#804040">41 </font>                    view_name = callback.func_name <font color="#0000ff"># If it's a function</font>
+<font color="#804040">42 </font>                <font color="#804040"><b>except</b></font> AttributeError:
+<font color="#804040">43 </font>                    view_name = callback.__class__.__name__ + '<font color="#ff00ff">.__call__</font>' <font color="#0000ff"># If it's a class</font>
+<font color="#804040">44 </font>                <font color="#804040"><b>raise</b></font> ValueError, &quot;<font color="#ff00ff">The view %s.%s didn't return an HttpResponse object.</font>&quot; % (callback.__module__, view_name)
+<font color="#804040">45 </font>
+<font color="#804040">46 </font>            <font color="#804040"><b>return</b></font> response
+<font color="#804040">47 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>ビュー関数が呼ばれるまでの流れ</h1>
+<ul class="incremental appear_0.5">
+<li>Middleware重要</li>
+<li>urlresolverはreverseも可能</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>Formと入力チェック</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>Formと入力チェック</h1>
+<ul class="incremental appear_0.5">
+<li>FormWrapperとManipulator</li>
+<li>モデルに合わせ自動検証</li>
+<li>用途に合わせてManipulatorを切り替える</li>
+<li>カスタムも可</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>Formと入力チェック</h1>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#804040"><b>def</b></font> <font color="#008080">create_place</font>(request):
+<font color="#804040"> 2 </font>    manipulator = Place.AddManipulator()
+<font color="#804040"> 3 </font>
+<font color="#804040"> 4 </font>    <font color="#804040"><b>if</b></font> request.POST:
+<font color="#804040"> 5 </font>        <font color="#0000ff"># If data was POSTed, we're trying to create a new Place.</font>
+<font color="#804040"> 6 </font>        new_data = request.POST.copy()
+<font color="#804040"> 7 </font>
+<font color="#804040"> 8 </font>        <font color="#0000ff"># Check for errors.</font>
+<font color="#804040"> 9 </font>        errors = manipulator.get_validation_errors(new_data)
+<font color="#804040">10 </font>
+<font color="#804040">11 </font>        <font color="#804040"><b>if</b></font> <font color="#804040"><b>not</b></font> errors:
+<font color="#804040">12 </font>            <font color="#0000ff"># No errors. This means we can save the data!</font>
+<font color="#804040">13 </font>            manipulator.do_html2python(new_data)
+<font color="#804040">14 </font>            new_place = manipulator.save(new_data)
+<font color="#804040">15 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>Formと入力チェック</h1>
+<pre class="grow">
+<font color="#804040">16 </font>            <font color="#0000ff"># Redirect to the object's &quot;edit&quot; page. Always use a redirect</font>
+<font color="#804040">17 </font>            <font color="#0000ff"># after POST data, so that reloads don't accidently create</font>
+<font color="#804040">18 </font>            <font color="#0000ff"># duplicate entires, and so users don't see the confusing</font>
+<font color="#804040">19 </font>            <font color="#0000ff"># &quot;Repost POST data?&quot; alert box in their browsers.</font>
+<font color="#804040">20 </font>            <font color="#804040"><b>return</b></font> HttpResponseRedirect(&quot;<font color="#ff00ff">/places/edit/%i/</font>&quot; % new_place.id)
+<font color="#804040">21 </font>    <font color="#804040"><b>else</b></font>:
+<font color="#804040">22 </font>        <font color="#0000ff"># No POST, so we want a brand new form without any data or errors.</font>
+<font color="#804040">23 </font>        errors = new_data = {}
+<font color="#804040">24 </font>
+<font color="#804040">25 </font>    <font color="#0000ff"># Create the FormWrapper, template, context, response.</font>
+<font color="#804040">26 </font>    form = forms.FormWrapper(manipulator, new_data, errors)
+<font color="#804040">27 </font>    <font color="#804040"><b>return</b></font> render_to_response('<font color="#ff00ff">places/create_form.html</font>', {'<font color="#ff00ff">form</font>': form})
+<font color="#804040">28 </font>
+</pre>
+</div>
+
+
+<div class="slide blindDown">
+<h1>Formと入力チェック</h1>
+<h2>バリデータ</h2>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#a020f0">from</font> django <font color="#a020f0">import</font> forms
+<font color="#804040"> 2 </font><font color="#a020f0">from</font> django.core <font color="#a020f0">import</font> validators
+<font color="#804040"> 3 </font>
+<font color="#804040"> 4 </font><font color="#804040"><b>class</b></font> <font color="#008080">ContactManipulator</font>(forms.Manipulator):
+<font color="#804040"> 5 </font>    <font color="#804040"><b>def</b></font> <font color="#008080">__init__</font>(self):
+<font color="#804040"> 6 </font>        self.fields = (
+<font color="#804040"> 7 </font>            <font color="#0000ff"># ... snip fields as above ...</font>
+<font color="#804040"> 8 </font>            forms.EmailField(field_name=&quot;<font color="#ff00ff">to</font>&quot;, validator_list=[self.isValidToAddress])
+<font color="#804040"> 9 </font>        )
+<font color="#804040">10 </font>
+<font color="#804040">11 </font>    <font color="#804040"><b>def</b></font> <font color="#008080">isValidToAddress</font>(self, field_data, all_data):
+<font color="#804040">12 </font>        <font color="#804040"><b>if</b></font> <font color="#804040"><b>not</b></font> field_data.endswith(&quot;<font color="#ff00ff">@example.com</font>&quot;):
+<font color="#804040">13 </font>            <font color="#804040"><b>raise</b></font> validators.ValidationError(&quot;<font color="#ff00ff">You can only send messages to example.com e-mail addresses.</font>&quot;)
+<font color="#804040">14 </font>
+</pre>
+<h3>標準で提供</h3>
+</div>
+
+<div class="slide blindDown">
+<h1>Formと入力チェック</h1>
+<ul class="incremental appear_0.5">
+<li>Djangoでもっとも不評なところ</li>
+<li>newforms</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>Formのあるビュー関数</h1>
+<ul class="incremental appear_0.5">
+<li>表示はGET</li>
+<li>登録はPOST</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>画面遷移</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>画面遷移</h1>
+<ul class="incremental appear_0.5">
+<li>REST</li>
+<li>ステートレス</li>
+<li>ウィザード形式には向いていない</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>テンプレート</h1>
+</div>
+
+<div class="slide section blindDown">
+<h1>え？HTMLじゃないの？</h1>
+</div>
+
+
+<div class="slide blindDown">
+<h1>テンプレート</h1>
+<ul class="incremental appear_0.5">
+<li>テンプレートはHTML以外にも使えるようにすべき</li>
+<li>速い</li>
+<li>カスタムタグ、フィルタでカスタマイズ可</li>
+<li>テンプレート、フィルタはどこでも使用できる</li>
+<li>人間に XML を編集させるなんて，サディスティックでしかありません！</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>テンプレート</h1>
+<pre class="grow">
+<font color="#804040"> 1 </font>{% extends &quot;base_generic.html&quot; %}
+<font color="#804040"> 2 </font>
+<font color="#804040"> 3 </font>{% block title %}{{ section.title }}{% endblock %}
+<font color="#804040"> 4 </font>
+<font color="#804040"> 5 </font>{% block content %}
+<font color="#804040"> 6 </font><font color="#008080">&lt;</font><font color="#804040"><b>h1</b></font><font color="#008080">&gt;</font><font color="#ff00ff"><b>{{ section.title }}</b></font><font color="#008080">&lt;/</font><font color="#804040"><b>h1</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 7 </font>
+<font color="#804040"> 8 </font>{% for story in story_list %}
+<font color="#804040"> 9 </font><font color="#008080">&lt;</font><font color="#804040"><b>h2</b></font><font color="#008080">&gt;</font>
+<font color="#804040">10 </font><font color="#ff00ff"><b>  </b></font><font color="#008080">&lt;</font><font color="#804040"><b>a</b></font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;{{ story.get_absolute_url }}&quot;</font><font color="#008080">&gt;</font>
+<font color="#804040">11 </font><font color="#6a5acd"><u>    {{ story.headline|upper }}</u></font>
+<font color="#804040">12 </font><font color="#6a5acd"><u>  </u></font><font color="#008080">&lt;/</font><font color="#804040"><b>a</b></font><font color="#008080">&gt;</font>
+<font color="#804040">13 </font><font color="#008080">&lt;/</font><font color="#804040"><b>h2</b></font><font color="#008080">&gt;</font>
+<font color="#804040">14 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>{{ story.tease|truncatewords:&quot;100&quot; }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">15 </font>{% endfor %}
+<font color="#804040">16 </font>{% endblock %}
+<font color="#804040">17 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>テンプレート</h1>
+<p>Form付きテンプレート</p>
+<pre class="grow">
+<font color="#804040"> 1 </font>{% extends &quot;base.html&quot; %}
+<font color="#804040"> 2 </font>
+<font color="#804040"> 3 </font>{% block content %}
+<font color="#804040"> 4 </font><font color="#008080">&lt;</font><font color="#804040"><b>h1</b></font><font color="#008080">&gt;</font><font color="#ff00ff"><b>Create a place:</b></font><font color="#008080">&lt;/</font><font color="#804040"><b>h1</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 5 </font>
+<font color="#804040"> 6 </font><font color="#008080">&lt;</font><font color="#804040"><b>form</b></font><font color="#008080"> </font><font color="#2e8b57"><b>method</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;post&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>action</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;../do_new/&quot;</font><font color="#008080">&gt;</font>
+<font color="#804040"> 7 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>label</b></font><font color="#008080"> </font><font color="#2e8b57"><b>for</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;id_name&quot;</font><font color="#008080">&gt;</font>Name:<font color="#008080">&lt;/</font><font color="#804040"><b>label</b></font><font color="#008080">&gt;</font> {{ form.name }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 8 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>label</b></font><font color="#008080"> </font><font color="#2e8b57"><b>for</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;id_address&quot;</font><font color="#008080">&gt;</font>Address:<font color="#008080">&lt;/</font><font color="#804040"><b>label</b></font><font color="#008080">&gt;</font> {{ form.address }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 9 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>label</b></font><font color="#008080"> </font><font color="#2e8b57"><b>for</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;id_city&quot;</font><font color="#008080">&gt;</font>City:<font color="#008080">&lt;/</font><font color="#804040"><b>label</b></font><font color="#008080">&gt;</font> {{ form.city }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">10 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>label</b></font><font color="#008080"> </font><font color="#2e8b57"><b>for</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;id_state&quot;</font><font color="#008080">&gt;</font>State:<font color="#008080">&lt;/</font><font color="#804040"><b>label</b></font><font color="#008080">&gt;</font> {{ form.state }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">11 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>label</b></font><font color="#008080"> </font><font color="#2e8b57"><b>for</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;id_zip_code&quot;</font><font color="#008080">&gt;</font>Zip:<font color="#008080">&lt;/</font><font color="#804040"><b>label</b></font><font color="#008080">&gt;</font> {{ form.zip_code }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">12 </font><font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>label</b></font><font color="#008080"> </font><font color="#2e8b57"><b>for</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;id_place_type&quot;</font><font color="#008080">&gt;</font>Place type:<font color="#008080">&lt;/</font><font color="#804040"><b>label</b></font><font color="#008080">&gt;</font> {{ form.place_type }}<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">13 </font><font color="#008080">&lt;</font><font color="#804040"><b>input</b></font><font color="#008080"> </font><font color="#2e8b57"><b>type</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;submit&quot;</font><font color="#008080"> /&gt;</font>
+<font color="#804040">14 </font><font color="#008080">&lt;/</font><font color="#804040"><b>form</b></font><font color="#008080">&gt;</font>
+<font color="#804040">15 </font>{% endblock %}
+<font color="#804040">16 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>テンプレート</h1>
+<ul class="incremental appear_0.5">
+<li>フィルタはUNIXパイプに似た形式</li>
+<li>フィルタはすぐに書ける</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>テンプレートについての意識</h1>
+<ul class="incremental appear_0.5">
+<li>良いテンプレートを書くのはデザイナ</li>
+<li>テンプレート言語をデザイナが覚える方がよい</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>レイアウト機能</h1>
+<ul class="incremental appear_0.5">
+<li>テンプレートの継承</li>
+<li>blockで指定</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>レイアウト機能</h1>
+<p>base.html</p>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#008080">&lt;</font><font color="#804040"><b>head</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 2 </font><font color="#a020f0">    </font><font color="#008080">&lt;</font><font color="#804040"><b>link</b></font><font color="#008080"> </font><font color="#2e8b57"><b>rel</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;stylesheet&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;style.css&quot;</font><font color="#008080"> /&gt;</font>
+<font color="#804040"> 3 </font><font color="#a020f0">    </font><font color="#008080">&lt;</font><font color="#804040"><b>title</b></font><font color="#008080">&gt;</font><font color="#ff00ff"><b>{% block title %}My amazing site{% endblock %}</b></font><font color="#008080">&lt;/</font><font color="#804040"><b>title</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 4 </font><font color="#008080">&lt;/</font><font color="#804040"><b>head</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 5 </font><font color="#008080">&lt;</font><font color="#804040"><b>body</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 6 </font>    <font color="#008080">&lt;</font><font color="#804040"><b>div</b></font><font color="#008080"> </font><font color="#2e8b57"><b>id</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;sidebar&quot;</font><font color="#008080">&gt;</font>{% block sidebar %}
+<font color="#804040"> 7 </font>    <font color="#008080">&lt;</font><font color="#804040"><b>ul</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 8 </font>        <font color="#008080">&lt;</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>a</b></font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;/&quot;</font><font color="#008080">&gt;</font><font color="#6a5acd"><u>Home</u></font><font color="#008080">&lt;/</font><font color="#804040"><b>a</b></font><font color="#008080">&gt;&lt;/</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 9 </font>        <font color="#008080">&lt;</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>a</b></font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;/blog/&quot;</font><font color="#008080">&gt;</font><font color="#6a5acd"><u>Blog</u></font><font color="#008080">&lt;/</font><font color="#804040"><b>a</b></font><font color="#008080">&gt;&lt;/</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;</font>
+<font color="#804040">10 </font>    <font color="#008080">&lt;/</font><font color="#804040"><b>ul</b></font><font color="#008080">&gt;</font>{% endblock %}
+<font color="#804040">11 </font>    <font color="#008080">&lt;/</font><font color="#804040"><b>div</b></font><font color="#008080">&gt;</font>
+<font color="#804040">12 </font>    <font color="#008080">&lt;</font><font color="#804040"><b>div</b></font><font color="#008080"> </font><font color="#2e8b57"><b>id</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;content&quot;</font><font color="#008080">&gt;</font>
+<font color="#804040">13 </font>        {% block content %}{% endblock %}
+<font color="#804040">14 </font>    <font color="#008080">&lt;/</font><font color="#804040"><b>div</b></font><font color="#008080">&gt;</font>
+<font color="#804040">15 </font><font color="#008080">&lt;/</font><font color="#804040"><b>body</b></font><font color="#008080">&gt;</font>
+<font color="#804040">16 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>レイアウト機能</h1>
+<p>child.html</p>
+<pre class="grow">
+<font color="#804040"> 1 </font>{% extends &quot;<font color="#ff00ff">base.html</font>&quot; %}
+<font color="#804040"> 2 </font>
+<font color="#804040"> 3 </font>{% block title %}My amazing blog{% endblock %}
+<font color="#804040"> 4 </font>
+<font color="#804040"> 5 </font>{% block content %}
+<font color="#804040"> 6 </font>{% <font color="#804040"><b>for</b></font> entry <font color="#804040"><b>in</b></font> blog_entries %}
+<font color="#804040"> 7 </font>    &lt;h2&gt;{{ entry.title }}&lt;/h2&gt;
+<font color="#804040"> 8 </font>    &lt;p&gt;{{ entry.body }}&lt;/p&gt;
+<font color="#804040"> 9 </font>{% endfor %}
+<font color="#804040">10 </font>{% endblock %}
+<font color="#804040">11 </font>
+</pre>
+</div>
+
+
+
+<div class="slide blindDown">
+<h1>レイアウト機能</h1>
+<p>レンダリング結果</p>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#008080">&lt;</font><font color="#804040"><b>head</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 2 </font><font color="#a020f0">    </font><font color="#008080">&lt;</font><font color="#804040"><b>link</b></font><font color="#008080"> </font><font color="#2e8b57"><b>rel</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;stylesheet&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;style.css&quot;</font><font color="#008080"> /&gt;</font>
+<font color="#804040"> 3 </font><font color="#a020f0">    </font><font color="#008080">&lt;</font><font color="#804040"><b>title</b></font><font color="#008080">&gt;</font><font color="#ff00ff"><b>My amazing blog</b></font><font color="#008080">&lt;/</font><font color="#804040"><b>title</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 4 </font><font color="#008080">&lt;/</font><font color="#804040"><b>head</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 5 </font><font color="#008080">&lt;</font><font color="#804040"><b>body</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 6 </font>    <font color="#008080">&lt;</font><font color="#804040"><b>div</b></font><font color="#008080"> </font><font color="#2e8b57"><b>id</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;sidebar&quot;</font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>ul</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>a</b></font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;/&quot;</font><font color="#008080">&gt;</font><font color="#6a5acd"><u>Home</u></font><font color="#008080">&lt;/</font><font color="#804040"><b>a</b></font><font color="#008080">&gt;&lt;/</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;</font><font color="#008080">&lt;</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;&lt;</font><font color="#804040"><b>a</b></font><font color="#008080"> </font><font color="#2e8b57"><b>href</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;/blog/&quot;</font><font color="#008080">&gt;</font><font color="#6a5acd"><u>Blog</u></font><font color="#008080">&lt;/</font><font color="#804040"><b>a</b></font><font color="#008080">&gt;&lt;/</font><font color="#804040"><b>li</b></font><font color="#008080">&gt;&lt;/</font><font color="#804040"><b>ul</b></font><font color="#008080">&gt;&lt;/</font><font color="#804040"><b>div</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 7 </font>    <font color="#008080">&lt;</font><font color="#804040"><b>div</b></font><font color="#008080"> </font><font color="#2e8b57"><b>id</b></font><font color="#008080">=</font><font color="#ff00ff">&quot;content&quot;</font><font color="#008080">&gt;</font>
+<font color="#804040"> 8 </font>        <font color="#008080">&lt;</font><font color="#804040"><b>h2</b></font><font color="#008080">&gt;</font><font color="#ff00ff"><b>Entry one</b></font><font color="#008080">&lt;/</font><font color="#804040"><b>h2</b></font><font color="#008080">&gt;</font>
+<font color="#804040"> 9 </font>        <font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>This is my first entry.<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">10 </font>        <font color="#008080">&lt;</font><font color="#804040"><b>h2</b></font><font color="#008080">&gt;</font><font color="#ff00ff"><b>Entry two</b></font><font color="#008080">&lt;/</font><font color="#804040"><b>h2</b></font><font color="#008080">&gt;</font>
+<font color="#804040">11 </font>        <font color="#008080">&lt;</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>This is my second entry.<font color="#008080">&lt;/</font><font color="#804040"><b>p</b></font><font color="#008080">&gt;</font>
+<font color="#804040">12 </font>    <font color="#008080">&lt;/</font><font color="#804040"><b>div</b></font><font color="#008080">&gt;</font>
+<font color="#804040">13 </font><font color="#008080">&lt;/</font><font color="#804040"><b>body</b></font><font color="#008080">&gt;</font>
+<font color="#804040">14 </font>
+</pre>
+</div>
+
+
+<div class="slide section blindDown">
+<h1>その他</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>標準で様々な機能を用意</h1>
+<ul class="incremental appear_0.5">
+<li>Admin</li>
+<li>GenericView</li>
+<li>認証</li>
+<li>Cache</li>
+<li>CSRF対策</li>
+<li>RSSフィード</li>
+<li>flatpage</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>バッテリー積んでます！！</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>Session</h1>
+<ul class="incremental appear_0.5">
+<li>辞書形式で操作</li>
+<li>Djangoは組み込みでSessionテーブルを持つ</li>
+<li>永続化は選択可</li>
+<li>DBでは遅いので考慮する必要アリ</li>
+</ul>
+<p></p>
+<p></p>
+<pre class="grow">
+<font color="#804040"></font>request.session['has_commented'] = True
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>認証</h1>
+<ul class="incremental appear_0.5">
+<li>Djangoは組み込みで認証テーブルを持つ</li>
+<li>ロール設定可</li>
+<li>チェックメソッド提供</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>Ajax</h1>
+<ul class="incremental appear_0.5">
+<li>dojoの話はなかったことに</li>
+<li>jsonを返せる→simplejson</li>
+<li>元々pythonとjsonは親和性が高い</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<ul class="incremental appear_0.5">
+<li>目玉機能</li>
+<li>退屈なCRUD作成からの開放</li>
+<li>ロジック部を使いまわす</li>
+<li>書くのはURLとHTMLだけ</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<p>urls.py</p>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#a020f0">from</font> django.conf.urls.defaults <font color="#a020f0">import</font> *
+<font color="#804040"> 2 </font><font color="#a020f0">from</font> django_website.apps.blog.models <font color="#a020f0">import</font> Entry
+<font color="#804040"> 3 </font>
+<font color="#804040"> 4 </font>info_dict = {'<font color="#ff00ff">queryset</font>': Entry.objects.all(),
+<font color="#804040"> 5 </font>             '<font color="#ff00ff">date_field</font>': '<font color="#ff00ff">pub_date</font>'}
+<font color="#804040"> 6 </font>
+<font color="#804040"> 7 </font>urlpatterns = patterns('<font color="#ff00ff">django.views.generic.date_based</font>',
+<font color="#804040"> 8 </font>   (r'<font color="#ff00ff">^(?P&lt;year&gt;\d{4})/(?P&lt;month&gt;[a-z]{3})/(?P&lt;day&gt;\w{1,2})/(?P&lt;slug&gt;[-\w]+)/$</font>',
+<font color="#804040"> 9 </font>   '<font color="#ff00ff">object_detail</font>', dict(info_dict, slug_field='<font color="#ff00ff">slug</font>')),
+<font color="#804040">10 </font>   (r'<font color="#ff00ff">^(?P&lt;year&gt;\d{4})/(?P&lt;month&gt;[a-z]{3})/(?P&lt;day&gt;\w{1,2})/$</font>',
+<font color="#804040">11 </font>   '<font color="#ff00ff">archive_day</font>', info_dict),
+<font color="#804040">12 </font>   (r'<font color="#ff00ff">^(?P&lt;year&gt;\d{4})/(?P&lt;month&gt;[a-z]{3})/$</font>',
+<font color="#804040">13 </font>   '<font color="#ff00ff">archive_month</font>', info_dict),
+<font color="#804040">14 </font>   (r'<font color="#ff00ff">^(?P&lt;year&gt;\d{4})/$</font>', '<font color="#ff00ff">archive_year</font>',  info_dict),
+<font color="#804040">15 </font>   (r'<font color="#ff00ff">^/?$</font>', '<font color="#ff00ff">archive_index</font>', info_dict),
+<font color="#804040">16 </font>)
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<ul class="incremental appear_0.5">
+<li>Admin</li>
+<li>モデルを外から渡す</li>
+<li>GenericViewは一覧のタイプごとに存在</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<p>list_object.py</p>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#804040"><b>def</b></font> <font color="#008080">object_list</font>(request, queryset, paginate_by=None, page=None,
+<font color="#804040"> 2 </font>        allow_empty=False, template_name=None, template_loader=loader,
+<font color="#804040"> 3 </font>        extra_context=None, context_processors=None, template_object_name='<font color="#ff00ff">object</font>',
+<font color="#804040"> 4 </font>        mimetype=None):
+<font color="#804040"> 5 </font>    &quot;&quot;&quot;
+<font color="#804040"> 6 </font><font color="#ff00ff">    Generic list of objects.</font>
+<font color="#804040"> 7 </font>
+<font color="#804040"> 8 </font><font color="#ff00ff">    Templates: ``&lt;app_label&gt;/&lt;model_name&gt;_list.html``</font>
+<font color="#804040"> 9 </font><font color="#ff00ff">    Context:</font>
+<font color="#804040">10 </font><font color="#ff00ff">        object_list</font>
+<font color="#804040">11 </font><font color="#ff00ff">            list of objects</font>
+<font color="#804040">12 </font><font color="#ff00ff">        is_paginated</font>
+<font color="#804040">13 </font><font color="#ff00ff">            are the results paginated?</font>
+<font color="#804040">14 </font><font color="#ff00ff">        results_per_page</font>
+<font color="#804040">15 </font><font color="#ff00ff">            number of objects per page (if paginated)</font>
+<font color="#804040">16 </font><font color="#ff00ff">        has_next</font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<p>list_object.py</p>
+<pre class="grow">
+<font color="#804040">17 </font><font color="#ff00ff">            is there a next page?</font>
+<font color="#804040">18 </font><font color="#ff00ff">        has_previous</font>
+<font color="#804040">19 </font><font color="#ff00ff">            is there a prev page?</font>
+<font color="#804040">20 </font><font color="#ff00ff">        page</font>
+<font color="#804040">21 </font><font color="#ff00ff">            the current page</font>
+<font color="#804040">22 </font><font color="#ff00ff">        next</font>
+<font color="#804040">23 </font><font color="#ff00ff">            the next page</font>
+<font color="#804040">24 </font><font color="#ff00ff">        previous</font>
+<font color="#804040">25 </font><font color="#ff00ff">            the previous page</font>
+<font color="#804040">26 </font><font color="#ff00ff">        pages</font>
+<font color="#804040">27 </font><font color="#ff00ff">            number of pages, total</font>
+<font color="#804040">28 </font><font color="#ff00ff">        hits</font>
+<font color="#804040">29 </font><font color="#ff00ff">            number of objects, total</font>
+<font color="#804040">30 </font><font color="#ff00ff">    </font>&quot;&quot;&quot;
+<font color="#804040">31 </font>    <font color="#804040"><b>if</b></font> extra_context <font color="#804040"><b>is</b></font> None: extra_context = {}
+<font color="#804040">32 </font>    queryset = queryset._clone()
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<p>list_object.py</p>
+<pre class="grow">
+<font color="#804040">33 </font>    <font color="#804040"><b>if</b></font> paginate_by:
+<font color="#804040">34 </font>        paginator = ObjectPaginator(queryset, paginate_by)
+<font color="#804040">35 </font>        <font color="#804040"><b>if</b></font> <font color="#804040"><b>not</b></font> page:
+<font color="#804040">36 </font>            page = request.GET.get('<font color="#ff00ff">page</font>', 1)
+<font color="#804040">37 </font>        <font color="#804040"><b>try</b></font>:
+<font color="#804040">38 </font>            page = int(page)
+<font color="#804040">39 </font>            object_list = paginator.get_page(page - 1)
+<font color="#804040">40 </font>        <font color="#804040"><b>except</b></font> (InvalidPage, ValueError):
+<font color="#804040">41 </font>            <font color="#804040"><b>if</b></font> page == 1 <font color="#804040"><b>and</b></font> allow_empty:
+<font color="#804040">42 </font>                object_list = []
+<font color="#804040">43 </font>            <font color="#804040"><b>else</b></font>:
+<font color="#804040">44 </font>                <font color="#804040"><b>raise</b></font> Http404
+<font color="#804040">45 </font>        c = RequestContext(request, {
+<font color="#804040">46 </font>            '<font color="#ff00ff">%s_list</font>' % template_object_name: object_list,
+<font color="#804040">47 </font>            '<font color="#ff00ff">is_paginated</font>': paginator.pages &gt; 1,
+<font color="#804040">48 </font>            '<font color="#ff00ff">results_per_page</font>': paginate_by,
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<p>list_object.py</p>
+<pre class="grow">
+<font color="#804040">49 </font>            '<font color="#ff00ff">has_next</font>': paginator.has_next_page(page - 1),
+<font color="#804040">50 </font>            '<font color="#ff00ff">has_previous</font>': paginator.has_previous_page(page - 1),
+<font color="#804040">51 </font>            '<font color="#ff00ff">page</font>': page,
+<font color="#804040">52 </font>            '<font color="#ff00ff">next</font>': page + 1,
+<font color="#804040">53 </font>            '<font color="#ff00ff">previous</font>': page - 1,
+<font color="#804040">54 </font>            '<font color="#ff00ff">pages</font>': paginator.pages,
+<font color="#804040">55 </font>            '<font color="#ff00ff">hits</font>' : paginator.hits,
+<font color="#804040">56 </font>        }, context_processors)
+<font color="#804040">57 </font>    <font color="#804040"><b>else</b></font>:
+<font color="#804040">58 </font>        c = RequestContext(request, {
+<font color="#804040">59 </font>            '<font color="#ff00ff">%s_list</font>' % template_object_name: queryset,
+<font color="#804040">60 </font>            '<font color="#ff00ff">is_paginated</font>': False
+<font color="#804040">61 </font>        }, context_processors)
+<font color="#804040">62 </font>        <font color="#804040"><b>if</b></font> <font color="#804040"><b>not</b></font> allow_empty <font color="#804040"><b>and</b></font> len(queryset) == 0:
+<font color="#804040">63 </font>            <font color="#804040"><b>raise</b></font> Http404
+<font color="#804040">64 </font>    <font color="#804040"><b>for</b></font> key, value <font color="#804040"><b>in</b></font> extra_context.items():
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>GenericView</h1>
+<p>list_object.py</p>
+<pre class="grow">
+<font color="#804040">65 </font>        <font color="#804040"><b>if</b></font> callable(value):
+<font color="#804040">66 </font>            c[key] = value()
+<font color="#804040">67 </font>        <font color="#804040"><b>else</b></font>:
+<font color="#804040">68 </font>            c[key] = value
+<font color="#804040">69 </font>    <font color="#804040"><b>if</b></font> <font color="#804040"><b>not</b></font> template_name:
+<font color="#804040">70 </font>        model = queryset.model
+<font color="#804040">71 </font>        template_name = &quot;<font color="#ff00ff">%s/%s_list.html</font>&quot; % (model._meta.app_label, model._meta.object_name.lower())
+<font color="#804040">72 </font>    t = template_loader.get_template(template_name)
+<font color="#804040">73 </font>    <font color="#804040"><b>return</b></font> HttpResponse(t.render(c), mimetype=mimetype)
+<font color="#804040">74 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>Cache</h1>
+<ul class="incremental appear_0.5">
+<li>何でも適用可能</li>
+<li>memcachedサポート</li>
+<li>cache方法も選択可(ユーザごとなど)</li>
+</ul>
+<p></p>
+<p></p>
+<pre class="grow">
+<font color="#804040">1 </font>&gt;&gt;&gt; cache.set('<font color="#ff00ff">my_key</font>', '<font color="#ff00ff">hello, world!</font>', 30)
+<font color="#804040">2 </font>&gt;&gt;&gt; cache.get('<font color="#ff00ff">my_key</font>')
+<font color="#804040">3 </font>'<font color="#ff00ff">hello, world!</font>'
+<font color="#804040">4 </font>
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>signal、dispatcher</h1>
+<ul class="incremental appear_0.5">
+<li>javascriptの世界では有名</li>
+<li>dispatcher.connect→dispatcher.send</li>
+</ul>
+<p></p>
+<pre class="grow">
+<font color="#804040">db/__init__.py</font>
+<font color="#804040"></font>
+<font color="#804040"></font>    dispatcher.connect(connection.close, signal=signals.request_finished)
+<font color="#804040"></font>
+<font color="#804040">core/handlers/modpython.py</font>
+<font color="#804040"></font>
+<font color="#804040"></font>    dispatcher.send(signal=signals.request_finished)
+</pre>
+</div>
+
+
+<div class="slide section blindDown">
+<h1>機能拡張</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>機能拡張</h1>
+<ul class="incremental appear_0.5">
+<li>Middleware</li>
+<li>Decorator</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>Middleware</h1>
+<ul class="incremental appear_0.5">
+<li>各ステージごとにFilter</li>
+<li>Responseを返す事ができる</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>SessionMiddleware</h1>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#804040"><b>class</b></font> <font color="#008080">SessionMiddleware</font>(object):
+<font color="#804040"> 2 </font>    <font color="#804040"><b>def</b></font> <font color="#008080">process_request</font>(self, request):
+<font color="#804040"> 3 </font>        request.session = SessionWrapper(request.COOKIES.get(settings.SESSION_COOKIE_NAME, None))
+<font color="#804040"> 4 </font>
+<font color="#804040"> 5 </font>    <font color="#804040"><b>def</b></font> <font color="#008080">process_response</font>(self, request, response):
+<font color="#804040"> 6 </font>        <font color="#0000ff"># If request.session was modified, or if response.session was set, save</font>
+<font color="#804040"> 7 </font>        <font color="#0000ff"># those changes and set a session cookie.</font>
+<font color="#804040"> 8 </font>        patch_vary_headers(response, ('<font color="#ff00ff">Cookie</font>',))
+<font color="#804040"> 9 </font>        <font color="#804040"><b>try</b></font>:
+<font color="#804040">10 </font>            modified = request.session.modified
+<font color="#804040">11 </font>        <font color="#804040"><b>except</b></font> AttributeError:
+<font color="#804040">12 </font>            <font color="#804040"><b>pass</b></font>
+<font color="#804040">13 </font>        <font color="#804040"><b>else</b></font>:
+<font color="#804040">14 </font>            <font color="#804040"><b>if</b></font> modified <font color="#804040"><b>or</b></font> settings.SESSION_SAVE_EVERY_REQUEST:
+<font color="#804040">15 </font>                session_key = request.session.session_key <font color="#804040"><b>or</b></font> Session.objects.get_new_session_key()
+<font color="#804040">16 </font>                <font color="#804040"><b>if</b></font> settings.SESSION_EXPIRE_AT_BROWSER_CLOSE:
+<font color="#804040">17 </font>                    max_age = None
+<font color="#804040">18 </font>                    expires = None
+<font color="#804040">19 </font>                <font color="#804040"><b>else</b></font>:
+<font color="#804040">20 </font>                    max_age = settings.SESSION_COOKIE_AGE
+<font color="#804040">21 </font>                    expires = datetime.datetime.strftime(datetime.datetime.utcnow() + datetime.timedelta(seconds=settings.SESSION_COOKIE_AGE), &quot;<font color="#ff00ff">%a, %d-%b-%Y %H:%M:%S GMT</font>&quot;)
+<font color="#804040">22 </font>                new_session = Session.objects.save(session_key, request.session._session,
+<font color="#804040">23 </font>                    datetime.datetime.now() + datetime.timedelta(seconds=settings.SESSION_COOKIE_AGE))
+<font color="#804040">24 </font>                response.set_cookie(settings.SESSION_COOKIE_NAME, session_key,
+<font color="#804040">25 </font>                    max_age=max_age, expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
+<font color="#804040">26 </font>                    secure=settings.SESSION_COOKIE_SECURE <font color="#804040"><b>or</b></font> None)
+<font color="#804040">27 </font>        <font color="#804040"><b>return</b></font> response
+</pre>
+</div>
+
+<div class="slide blindDown">
+<h1>Decorator</h1>
+<ul class="incremental appear_0.5">
+<li>ビュー関数を対象</li>
+<li>チェックなど単体で使用</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>Decorator</h1>
+<pre class="grow">
+<font color="#804040"> 1 </font><font color="#804040"><b>def</b></font> <font color="#008080">user_passes_test</font>(test_func, login_url=LOGIN_URL):
+<font color="#804040"> 2 </font>    &quot;&quot;&quot;
+<font color="#804040"> 3 </font><font color="#ff00ff">    Decorator for views that checks that the user passes the given test,</font>
+<font color="#804040"> 4 </font><font color="#ff00ff">    redirecting to the log-in page if necessary. The test should be a callable</font>
+<font color="#804040"> 5 </font><font color="#ff00ff">    that takes the user object and returns True if the user passes.</font>
+<font color="#804040"> 6 </font><font color="#ff00ff">    </font>&quot;&quot;&quot;
+<font color="#804040"> 7 </font>    <font color="#804040"><b>def</b></font> <font color="#008080">_dec</font>(view_func):
+<font color="#804040"> 8 </font>        <font color="#804040"><b>def</b></font> <font color="#008080">_checklogin</font>(request, *args, **kwargs):
+<font color="#804040"> 9 </font>            <font color="#804040"><b>if</b></font> test_func(request.user):
+<font color="#804040">10 </font>                <font color="#804040"><b>return</b></font> view_func(request, *args, **kwargs)
+<font color="#804040">11 </font>            <font color="#804040"><b>return</b></font> HttpResponseRedirect('<font color="#ff00ff">%s?%s=%s</font>' % (login_url, REDIRECT_FIELD_NAME, quote(request.get_full_path())))
+<font color="#804040">12 </font>        _checklogin.__doc__ = view_func.__doc__
+<font color="#804040">13 </font>        _checklogin.__dict__ = view_func.__dict__
+<font color="#804040">14 </font>
+<font color="#804040">15 </font>        <font color="#804040"><b>return</b></font> _checklogin
+<font color="#804040">16 </font>    <font color="#804040"><b>return</b></font> _dec
+<font color="#804040">17 </font>
+</pre>
+</div>
+
+<div class="slide section blindDown">
+<h1>運用</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>運用</h1>
+<ul class="incremental appear_0.5">
+<li>mod_python、fcgiが定番</li>
+<li>wsgiサポート→mod_wsgi</li>
+<li>テーブル作成などはコマンドで作成するため楽かも</li>
+<li>マスタ管理はそのままAdminを使う</li>
+</ul>
+</div>
+
+<div class="slide blindDown">
+<h1>パフォーマンス</h1>
+<ul class="incremental appear_0.5">
+<li>そもそもPythonは擬似マルチスレッド(GIL)</li>
+<li>特化コンパイラ（Psyco）</li>
+<li>キャッシュが使える箇所は使う</li>
+<li>twistedの可能性</li>
+</ul>
+</div>
+
+<div class="slide section blindDown">
+<h1>Djangoの今後</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>Djangoの今後</h1>
+<ul class="incremental appear_0.5">
+<li>1.0は春以降</li>
+<li>Pro Djangoは・・・・</li>
+<li>newformなど落ち着かない機能が多い</li>
+<li>ローカルごとの機能を強化(都道府県コードなど)</li>
+</ul>
+</div>
+
+
+<div class="slide section blindDown">
+<h1>まとめ</h1>
+</div>
+
+<div class="slide blindDown">
+<h1>まとめ</h1>
+<ul class="incremental appear_0.5">
+<li>Webサイトを立ち上げるためのフレームワーク</li>
+<li>ステートレス</li>
+<li>学習コストが非常に低い（言語も合わせて）</li>
+<li>動的言語の割りに簡潔</li>
+</ul>
+</div>
+
+<div class="slide section" >
+<h1>Thank you</h1>
+</div>
+
+</div>
+
+</body>
+</html>
